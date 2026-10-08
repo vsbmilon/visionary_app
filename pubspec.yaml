@@ -1,0 +1,38 @@
+name: visionary_app
+description: Visionary Partners - private member deposit, investment & profit tracker (Android, sideload APK).
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Firebase (free Spark plan is enough for 15-20 members)
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
+  cloud_firestore: ^5.4.4
+  firebase_messaging: ^15.1.3
+  # State management
+  provider: ^6.1.2
+  # UI / charts
+  fl_chart: ^0.69.0
+  intl: ^0.19.0
+  # Reports export
+  pdf: ^3.11.1
+  printing: ^5.13.2
+  excel: ^4.0.6
+  share_plus: ^10.0.2
+  path_provider: ^2.1.4
+  # Misc
+  http: ^1.2.2
+  shared_preferences: ^2.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true

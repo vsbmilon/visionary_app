@@ -1,0 +1,122 @@
+rules_version = '2';
+
+// =====================================================================
+// VISIONARY - Firestore Security Rules
+// Roles: super_admin | admin | member | finance_viewer
+// Every signed-in request is checked against users/{uid}:
+//   - active flag (deactivated users lose ALL access instantly)
+//   - role
+//   - permissions map (investment view grant, extra account viewers)
+// =====================================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function signedIn() { return request.auth != null; }
+
+    function me() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isActive() { return signedIn() && me().active == true; }
+    function role()     { return me().role; }
+    function isAdmin()  { return isActive() && (role() == 'admin' || role() == 'super_admin'); }
+    function isSuper()  { return isActive() && role() == 'super_admin'; }
+    function isViewer() { return isActive() && role() == 'finance_viewer'; }
+    function perms()    { return me().get('permissions', {}); }
+
+    function canInvest() {
+      return isAdmin() || (isActive() && perms().get('investment', false) == true);
+    }
+
+    function accountVisible(acctId) {
+      let acct = get(/databases/$(database)/documents/accounts/$(acctId)).data;
+      return isAdmin()
+        || acct.get('memberVisible', true) == true
+        || request.auth.uid in acct.get('extraViewerUids', []);
+    }
+
+    // ---------- users / role management ----------
+    match /users/{uid} {
+      allow get:    if isActive() && (request.auth.uid == uid || isAdmin());
+      allow list:   if isAdmin();
+      // profile self-service (name/phone/lastLogin only), or admin/super mgmt
+      allow update: if isSuper()
+                    || (isAdmin() && uid != request.auth.uid
+                        && resource.data.role != 'super_admin'
+                        && request.resource.data.role != 'super_admin')
+                    || (isActive() && request.auth.uid == uid
+                        && request.resource.data.role == resource.data.role
+                        && request.resource.data.active == resource.data.active
+                        && request.resource.data.permissions == resource.data.permissions);
+      allow create: if isAdmin() && request.resource.data.role != 'super_admin';
+      allow delete: if isSuper() && resource.data.role != 'super_admin';
+
+      match /tokens/{tokenId} {
+        allow read, write: if isActive() && (request.auth.uid == uid || isAdmin());
+      }
+    }
+
+    // ---------- org settings ----------
+    match /orgSettings/{orgId} {
+      allow read:  if isActive();
+      allow write: if isAdmin();
+    }
+
+    // ---------- members ----------
+    match /members/{memberId} {
+      allow read:   if isActive();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ---------- accounts ----------
+    match /accounts/{accountId} {
+      allow read:   if isActive() && accountVisible(accountId);
+      allow write:  if isAdmin();
+    }
+
+    // ---------- deposits (financial core) ----------
+    match /deposits/{depositId} {
+      allow read:   if isActive() && accountVisible(resource.data.accountId);
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ---------- investment / profit / expenses : CONFIDENTIAL ----------
+    match /investments/{investmentId} {
+      allow read:  if canInvest();
+      allow write: if isAdmin();
+    }
+    match /profitEvents/{eventId} {
+      allow read:  if canInvest();
+      allow write: if isAdmin();
+    }
+    match /expenses/{expenseId} {
+      allow read:  if canInvest();
+      allow write: if isAdmin();
+    }
+
+    // ---------- notifications ----------
+    match /notifications/{notificationId} {
+      allow read:   if isActive();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ---------- audit log : append-only ----------
+    match /auditLogs/{logId} {
+      allow create: if isActive();
+      allow read:   if isAdmin() || isViewer();
+      allow update, delete: if false;   // nobody can edit or erase history
+    }
+
+    // ---------- deny everything else ----------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
