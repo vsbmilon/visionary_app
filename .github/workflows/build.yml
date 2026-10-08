@@ -27,15 +27,13 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        working-directory: visionary_app
         run: flutter pub get
 
       - name: Build APK
-        working-directory: visionary_app
         run: flutter build apk --release
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: visionary_app/build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
