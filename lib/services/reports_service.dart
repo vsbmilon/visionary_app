@@ -34,9 +34,9 @@ class ReportsExporter {
     doc.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
-        margin: const EdgeInsets.all(28),
+        margin: const pw.EdgeInsets.all(28),
         header: (ctx) => pw.Container(
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const pw.EdgeInsets.only(bottom: 12),
           child: pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
@@ -55,7 +55,7 @@ class ReportsExporter {
               style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
           if (r.subtitle.isNotEmpty)
             pw.Padding(
-              padding: const EdgeInsets.only(top: 4, bottom: 4),
+              padding: const pw.EdgeInsets.only(top: 4, bottom: 4),
               child: pw.Text(r.subtitle, style: const pw.TextStyle(fontSize: 11)),
             ),
           pw.SizedBox(height: 10),
@@ -71,7 +71,7 @@ class ReportsExporter {
               for (var i = 0; i < r.columns.length; i++)
                 i: i == 0 ? pw.Alignment.centerLeft : pw.Alignment.centerRight
             },
-            cellPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+            cellPadding: const pw.EdgeInsets.symmetric(horizontal: 6, vertical: 6),
             headers: r.columns,
             data: [...r.rows, ...r.footer],
           ),

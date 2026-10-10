@@ -1,11 +1,11 @@
+library;
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../core/theme.dart';
 import '../core/utils.dart';
 
 /// Chart widgets (fl_chart) — lightweight, offline, no JS.
-library;
-
 class MonthlyBarChart extends StatelessWidget {
   final Map<String, double> data; // period -> total
   final double height;
@@ -67,9 +67,9 @@ class MonthlyBarChart extends StatelessWidget {
                   '${Fmt.period(e.key)}\n',
                   TextStyle(color: scheme.onInverseSurface, fontWeight: FontWeight.w700),
                   children: [
-                    BarTooltipItem(
-                      Fmt.money(e.value),
-                      TextStyle(color: scheme.onInverseSurface, fontSize: 11),
+                    TextSpan(
+                      text: Fmt.money(e.value),
+                      style: TextStyle(color: scheme.onInverseSurface, fontSize: 11),
                     ),
                   ],
                 );
@@ -217,7 +217,7 @@ class TrendLineChart extends StatelessWidget {
                 getTitlesWidget: (v, _) {
                   final i = v.toInt();
                   if (i < 0 || i >= points.length) return const SizedBox();
-                  return Text(Fmt.period(points[i].key).split(' ')[0],
+                  return Text(Fmt.period(points[i].$1).split(' ')[0],
                       style: TextStyle(fontSize: 9, color: scheme.onSurfaceVariant));
                 },
               ),
@@ -227,7 +227,7 @@ class TrendLineChart extends StatelessWidget {
             touchTooltipData: LineTouchTooltipData(
               getTooltipItems: (spots) => spots
                   .map((s) => LineTooltipItem(
-                        '${Fmt.period(points[s.x.toInt()].key)}\n${Fmt.money(points[s.x.toInt()].$2)}',
+                        '${Fmt.period(points[s.x.toInt()].$1)}\n${Fmt.money(points[s.x.toInt()].$2)}',
                         TextStyle(
                             color: scheme.onInverseSurface,
                             fontWeight: FontWeight.w700,

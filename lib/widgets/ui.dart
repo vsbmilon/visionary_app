@@ -1,9 +1,9 @@
+library;
+
 import 'package:flutter/material.dart';
 import '../core/theme.dart';
 
 /// Shared premium UI building blocks.
-library;
-
 class StatCard extends StatelessWidget {
   final String label;
   final String value;
@@ -105,7 +105,7 @@ class SectionCard extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                           color: scheme.onSurface)),
                 ),
-                if (trailing != null) trailing,
+                if (trailing != null) trailing!,
               ],
             ),
             const SizedBox(height: 12),

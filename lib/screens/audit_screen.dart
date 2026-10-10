@@ -103,7 +103,7 @@ class AuditScreen extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                         color: AppTheme.danger)),
                 const SizedBox(height: 4),
-                _json(l.before!),
+                _json(context, l.before!),
                 const SizedBox(height: 12),
               ],
               if (l.after != null) ...[
@@ -113,7 +113,7 @@ class AuditScreen extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                         color: AppTheme.success)),
                 const SizedBox(height: 4),
-                _json(l.after!),
+                _json(context, l.after!),
               ],
             ],
           ),
@@ -122,7 +122,7 @@ class AuditScreen extends StatelessWidget {
     );
   }
 
-  Widget _json(Map<String, dynamic> m) => Container(
+  Widget _json(BuildContext context, Map<String, dynamic> m) => Container(
         width: double.infinity,
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
