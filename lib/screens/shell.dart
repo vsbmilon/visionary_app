@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../core/permissions.dart';
 import '../core/config.dart';
 import '../state/session.dart';
 import '../widgets/ui.dart';

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import 'core/permissions.dart';
 import 'core/theme.dart';
 import 'firebase_options.dart';
 import 'screens/shell.dart';
