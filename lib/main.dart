@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 
 import 'core/permissions.dart';
 import 'core/theme.dart';
-import 'firebase_options.dart';
 import 'screens/shell.dart';
 import 'screens/splash_login.dart';
 import 'services/fcm_service.dart';
@@ -18,9 +17,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Android loads the real Firebase settings from google-services.json.
+  // firebase_options.dart in this repository is only a placeholder.
+  await Firebase.initializeApp();
 
   // Offline-first: persistent cache so the app is instant & low-data.
   FirebaseFirestore.instance.settings = const Settings(
@@ -28,9 +27,14 @@ Future<void> main() async {
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
 
-  await FcmService.init();
-
   runApp(const VisionaryApp());
+
+  // Notification permission/setup must not prevent the app UI from starting.
+  try {
+    await FcmService.init();
+  } catch (error) {
+    debugPrint('Notification setup failed: $error');
+  }
 }
 
 class VisionaryApp extends StatelessWidget {
