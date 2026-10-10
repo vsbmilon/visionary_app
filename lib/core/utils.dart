@@ -1,8 +1,8 @@
+library;
+
 import 'package:intl/intl.dart';
 
 /// Formatting + period helpers shared across the app.
-library;
-
 class Fmt {
   Fmt._();
 

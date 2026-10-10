@@ -24,7 +24,7 @@ class SheetsSync {
       throw Exception('Sheets API error ${res.statusCode}: ${res.body}');
     }
     final data = jsonDecode(res.body) as Map<String, dynamic>;
-    final batch = WriteBatch();
+    final batch = FirebaseFirestore.instance.batch();
     int nMembers = 0, nAccounts = 0, nDeposits = 0, nInvest = 0;
 
     // accounts

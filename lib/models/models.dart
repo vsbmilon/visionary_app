@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'core/permissions.dart';
-
-/// All Firestore models in one place (collections design: docs/01).
 library;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../core/permissions.dart';
+
+/// All Firestore models in one place (collections design: docs/01).
 // ---------------------------------------------------------------- users
 class UserDoc {
   final String uid;
